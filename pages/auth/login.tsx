@@ -2,11 +2,11 @@
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import Box from "@mui/material/Box";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Logo from "@/components/logo/logo";
 import validationText from "@/json/messages/validationText";
 import { emailRegex } from "@/lib/regex";
-import { setAccessToken } from "@/reduxtoolkit/slices/userSlice";
+import { setAccessToken, setLoginData } from "@/reduxtoolkit/slices/userSlice";
 import { bgGradient } from "@/themes/css";
 import CustomInput from "@/ui/Inputs/CustomInput";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -27,6 +27,9 @@ import { useMutation } from "@tanstack/react-query";
 import { loginMutation } from "@/api/functions/user.api";
 import { toast } from "sonner";
 import { useRouter } from "next/router";
+import { getCookie, setCookieClient } from "@/lib/functions/storage.lib";
+import { useDispatch } from "react-redux";
+import { useAppSelector } from "@/hooks/redux/useAppSelector";
 // ----------------------------------------------------------------------
 
 const schema = yup.object().shape({
@@ -55,11 +58,9 @@ export default function LoginView() {
     }
   });
 
-  // const supabase = createClient();
-  // const loginData = async (data: any) =>
-  //   await supabase.auth.signInWithPassword(data);
-
   const theme = useTheme();
+  const dispatch = useDispatch();
+  const { userData } = useAppSelector((s) => s.userSlice);
 
   const { mutate } = useMutation({
     mutationFn: loginMutation
@@ -70,14 +71,20 @@ export default function LoginView() {
       onSuccess: (res: any) => {
         console.log("res", res);
         if (res?.data?.session?.user) {
+          setCookieClient("adminToken", res?.data?.session?.access_token);
+          setCookieClient("userData", res?.data?.session?.user?.email);
+          dispatch(setAccessToken(res?.data?.session?.access_token));
+          dispatch(setLoginData(res?.data?.session?.user))
           toast.success("Login Successfully!!!");
-          router.push('/dashboard')
+          router.push("/dashboard");
         } else if (res?.error) {
           toast.error(res?.error?.message);
         }
       }
     });
   };
+
+  console.log("isLoggedIn", userData);
 
   const [showPassword, setShowPassword] = useState(false);
 

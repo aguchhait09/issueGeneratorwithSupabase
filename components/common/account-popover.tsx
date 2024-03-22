@@ -1,3 +1,5 @@
+import { useAppSelector } from "@/hooks/redux/useAppSelector";
+import { getCookie } from "@/lib/functions/storage.lib";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
@@ -7,6 +9,7 @@ import Popover from "@mui/material/Popover";
 import Typography from "@mui/material/Typography";
 import { Theme, alpha } from "@mui/material/styles";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 
 interface AccountPopoverProps {
   // You can define any additional props here
@@ -28,6 +31,9 @@ const MENU_OPTIONS = [
 ];
 
 const AccountPopover: React.FC<AccountPopoverProps> = () => {
+  const dispatch = useDispatch();
+  const { userData } = useAppSelector((s) => s.userSlice);
+  const email = getCookie("userData");
   const [open, setOpen] = useState<HTMLElement | null>(null);
 
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -62,7 +68,7 @@ const AccountPopover: React.FC<AccountPopoverProps> = () => {
               `solid 2px ${theme.palette.background.default}`
           }}
         >
-          A
+          S
         </Avatar>
       </IconButton>
 
@@ -83,10 +89,10 @@ const AccountPopover: React.FC<AccountPopoverProps> = () => {
       >
         <Box sx={{ my: 1.5, px: 2 }}>
           <Typography variant="subtitle2" noWrap>
-            User
+            {email?.replace("@gmail.com", "")}
           </Typography>
           <Typography variant="body2" sx={{ color: "text.secondary" }} noWrap>
-            email
+            {email}
           </Typography>
         </Box>
 

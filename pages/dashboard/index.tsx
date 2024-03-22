@@ -1,9 +1,11 @@
 import AppWidgetSummaryCard from "@/components/cards/AppWidgetSummaryCard";
 
 import DashboardLayout from "@/layout/dashboard/DashboardLayout";
+import { getCookie } from "@/lib/functions/storage.lib";
 import { Container, Grid, Typography } from "@mui/material";
 
 import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 
 const AppWebsiteVisitsChart = dynamic(
   () => import("@/components/chart/AppWebsiteVisitsChart"),
@@ -11,11 +13,16 @@ const AppWebsiteVisitsChart = dynamic(
 );
 
 export default function Home() {
+  const [name, setName] = useState("");
+  useEffect(() => {
+    const email = getCookie("userData");
+    setName(email as string);
+  }, [name]);
   return (
     <DashboardLayout>
       <Container maxWidth="xl">
         <Typography variant="h4" sx={{ mb: 5 }}>
-          Hi, Welcome back 👋
+          Hi {name?.replace("@gmail.com", "").charAt(0).toUpperCase()+name?.replace("@gmail.com", "").substring(1).toLowerCase()}, Welcome back 👋
         </Typography>
 
         <Grid container spacing={4}>

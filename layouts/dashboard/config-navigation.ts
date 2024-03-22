@@ -2,6 +2,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import PersonIcon from "@mui/icons-material/Person";
 import SettingsIcon from "@mui/icons-material/Settings";
 import TocIcon from "@mui/icons-material/Toc";
+import BugReportIcon from "@mui/icons-material/BugReport";
 
 export interface NavItem {
   title: string;
@@ -52,6 +53,13 @@ const navConfig: NavItem[] = [
     title: "user",
     path: "/dashboard/user",
     icon: PersonIcon,
+    children: [],
+    hasChild: false
+  },
+  {
+    title: "Issue",
+    path: "/issue",
+    icon: BugReportIcon,
     children: [],
     hasChild: false
   }

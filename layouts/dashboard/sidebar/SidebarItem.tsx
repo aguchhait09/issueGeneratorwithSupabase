@@ -79,7 +79,7 @@ function SidebarItem({ item }: SidebarItemProps) {
           <List component="div" disablePadding>
             {item?.children?.map((_item) => (
               <ListItemButton
-                onClick={() => router.push(item?.path as string)}
+                onClick={() => router.push(_item?.path as string)}
                 sx={{ ...sx, pl: 4 }}
               >
                 <Box component="span" sx={{ width: 24, height: 24, mr: 2 }}>

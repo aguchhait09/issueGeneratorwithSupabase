@@ -49,23 +49,6 @@ export default function LoginView() {
     }
   });
 
-  async function login(formData: FormData) {
-    const supabase = createClient();
-    const data = {
-      email: formData.get("email") as string,
-      password: formData.get("password") as string
-    };
-
-    const { error } = await supabase.auth.signInWithPassword(data);
-
-    if (error) {
-      redirect("/error");
-    }
-
-    revalidatePath("/", "layout");
-    redirect("/dashboard");
-  }
-
   const theme = useTheme();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -87,7 +70,6 @@ export default function LoginView() {
           left: { xs: 16, md: 24 }
         }}
       />
-
       <Stack alignItems="center" justifyContent="center" sx={{ height: 1 }}>
         <Card
           sx={{

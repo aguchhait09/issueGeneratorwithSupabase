@@ -8,11 +8,12 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { alpha } from "@mui/material/styles";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { NAV } from "@/config/constants";
 import navConfig from "../config-navigation";
 import SidebarItem from "./SidebarItem";
+import { getCookie } from "@/lib/functions/storage.lib";
 
 interface SidebarProps {
   openNav: boolean;
@@ -22,6 +23,11 @@ interface SidebarProps {
 export default function Sidebar({ openNav, onCloseNav }: SidebarProps) {
   const pathname = usePathname();
   const upLg = useResponsive("up", "lg");
+  const [email, setEmail] = useState("");
+  useEffect(() => {
+    const email = getCookie("userData");
+    setEmail(email as string);
+  }, []);
 
   useEffect(() => {
     if (openNav) {
@@ -45,10 +51,10 @@ export default function Sidebar({ openNav, onCloseNav }: SidebarProps) {
       <Avatar src="" alt="photoURL" />
 
       <Box sx={{ ml: 2 }}>
-        <Typography variant="subtitle2">user</Typography>
+        <Typography variant="subtitle2">{email.replace("@gmail.com", "").charAt(0).toUpperCase()+email.replace("@gmail.com", "").substring(1).toLowerCase()}</Typography>
 
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
-          role
+          {email}
         </Typography>
       </Box>
     </Box>

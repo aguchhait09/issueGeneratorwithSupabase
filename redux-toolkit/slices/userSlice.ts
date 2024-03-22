@@ -1,7 +1,8 @@
 import { userData } from "@/types/common.type";
 import { createSlice } from "@reduxjs/toolkit";
-import { destroyCookie } from "nookies";
+import { destroyCookie, parseCookies } from "nookies";
 import { userSliceData } from "../interfaces/interfaces";
+import { getCookie } from "@/lib/functions/storage.lib";
 
 const initialState: userSliceData = {
   isLoggedIn: false,
@@ -16,8 +17,13 @@ export const userSlice = createSlice({
   reducers: {
     setLoginData: (state, { payload }: { payload: userData }) => {
       // state.email
-      state.userData = payload;
-      state.isLoggedIn = true;
+      const cookies = parseCookies();
+
+      const token = cookies['adminToken'];
+      if (token) {
+        state.userData = payload;
+        state.isLoggedIn = true;
+      }
     },
     setAccessToken: (state, { payload }: { payload: string }) => {
       // state.email
