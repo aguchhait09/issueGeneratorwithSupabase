@@ -32,20 +32,19 @@ export default function MuiModalWrapper(props: MuiModalWrapperProps) {
         }
       }}
     >
-      <Box>
+      <Box sx={{ pt: 2, pl: 2, pr: 2 }}>
         <Stack
           direction="row"
           justifyContent="space-between"
           alignItems="center"
           spacing={2}
         >
-          <Typography>{title}</Typography>
+          <Typography fontWeight="bold"> {title}</Typography>
           <IconButton onClick={() => onClose()}>
             <CloseIcon />
           </IconButton>
         </Stack>
       </Box>
-
       <DialogContent>{children}</DialogContent>
     </Dialog>
   );

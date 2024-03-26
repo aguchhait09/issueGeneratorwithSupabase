@@ -1,5 +1,6 @@
 import { useAppSelector } from "@/hooks/redux/useAppSelector";
 import { getCookie } from "@/lib/functions/storage.lib";
+import { Button } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
@@ -8,9 +9,12 @@ import MenuItem from "@mui/material/MenuItem";
 import Popover from "@mui/material/Popover";
 import Typography from "@mui/material/Typography";
 import { Theme, alpha } from "@mui/material/styles";
-import React, { useState } from "react";
+import { destroyCookie } from "nookies";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-
+import { createClient } from "utils/supabase/client";
+import { deleteCookie } from "cookies-next";
+import { useRouter } from "next/router";
 interface AccountPopoverProps {
   // You can define any additional props here
 }
@@ -31,9 +35,9 @@ const MENU_OPTIONS = [
 ];
 
 const AccountPopover: React.FC<AccountPopoverProps> = () => {
+  const router = useRouter();
   const dispatch = useDispatch();
   const { userData } = useAppSelector((s) => s.userSlice);
-  const email = getCookie("userData");
   const [open, setOpen] = useState<HTMLElement | null>(null);
 
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -43,7 +47,20 @@ const AccountPopover: React.FC<AccountPopoverProps> = () => {
   const handleClose = () => {
     setOpen(null);
   };
+  const supabase = createClient();
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    destroyCookie(null, "adminToken", { path: "/auth/login" });
+    deleteCookie("adminToken");
+    router.push("/auth/login");
+  };
+
+  const [email, setEmail] = useState('')
+  useEffect(()=>{
+    const emailId = getCookie("userData");
+    setEmail(emailId as string)
+  }, [email])
   return (
     <>
       <IconButton
@@ -68,7 +85,7 @@ const AccountPopover: React.FC<AccountPopoverProps> = () => {
               `solid 2px ${theme.palette.background.default}`
           }}
         >
-          S
+          {email.charAt(0).replace("@gmail.com", '').toUpperCase()}
         </Avatar>
       </IconButton>
 
@@ -112,7 +129,7 @@ const AccountPopover: React.FC<AccountPopoverProps> = () => {
           onClick={handleClose}
           sx={{ typography: "body2", color: "error.main", py: 1.5 }}
         >
-          Logout
+          <Button onClick={handleLogout}> Logout </Button>
         </MenuItem>
       </Popover>
     </>
